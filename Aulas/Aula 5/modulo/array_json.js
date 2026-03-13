@@ -33,8 +33,8 @@
 */
 
 //Formas de criar um ARRAY 
-const listaDeNome     = ['José', 'Maria', 'João', 'André', 'Alex'] //Eu consigo dentro do mesmo Array guardar tipos de dados diferentes
-const listaDeClientes = []
+const listaDeNome         = ['José', 'Maria', 'João', 'André', 'Alex', 'Carlos', 'Ana', 'Bruna', 'Jake', 'Ana', 'Ana da Silva'] //Eu consigo dentro do mesmo Array guardar tipos de dados diferentes
+const listaDeClientes     = []
 const listaDeFornecedores = []
 
 const exibirDados = function  (params) {
@@ -108,13 +108,210 @@ const manipularDados = function(){
 
     console.log(listaDeClientes)
 
-    //Permite adicionar novos valores no Array, sempre no final da lista
+    //Permite adicionar novos valores no Array, sempre no FINAL da lista
     listaDeFornecedores.push('Luiz da Silva')
     listaDeFornecedores.push('Zezinho da Silva')
     listaDeFornecedores.push('Huguinho da Silva')
     listaDeFornecedores.push('Luizinho da Silva', 'André da Silva', 'Carlos da Silva')
 
-    console.log(listaDeFornecedores)
+    console.table(listaDeFornecedores)
+
+    //Permite adicionar novos valores no Array, sempre no INICIO da lista, empurrando os outros para baixo
+    listaDeFornecedores.unshift('Ana Carolina')
+    console.table(listaDeFornecedores)
+
+    //Permite remover elementos do FINAL da lista
+    listaDeFornecedores.pop()
+    console.table(listaDeFornecedores)
+
+    //Permite remover elementos do INICIO da lista
+    listaDeFornecedores.shift()
+    console.table(listaDeFornecedores)
+
+    //Splice () -> Permite remover um elemento baseado no indice
+                    //splice(indice, qtde de elementos que vc deseja apagar)
+    listaDeFornecedores.splice(2,1)
+    console.table(listaDeFornecedores)
+
+    //Splice () -> Permite adicionar um elemento baseado no indice
+                //splice(indice, qtde de elementos que vc deseja apagar, 'Conteúdo que vc deseja adicionar')
+                //ele vai ser adicionado no indice escrito no inicio
+    listaDeFornecedores.splice(2,0,'Carlos da Silva')
+    console.table(listaDeFornecedores)
+
+    listaDeFornecedores[1] = 'Novo conreudo'
+    console.table(listaDeFornecedores)
 }
+
+const removerItem = function(nome){
+    
+    //Retorna o indice de um elemneto fazendo a busca pelo conteudo
+    //Se o indexof não encontrar o conteudo ele devolve -1
+    let indice = listaDeNome.indexOf(nome)
+    if(indice != -1){
+        listaDeNome.splice(indice, 1)
+        return true
+    }else{
+        return false
+    }
+
+    // for(indice in listaDeNome){
+    //     if(listaDeNome[indice] == nome){
+    //         listaDeNome.splice(indice, 1)
+    //     }
+    // }
+
+    
+
+}
+
+const verificarItem = function(nome){
+    //verifica a existencia de um conteudo dentro de uma lista (true/false)
+    return listaDeNome.includes(nome)
+}
+
+const quantidadeDeItens = function(nome){
+    let cont = 0
+    listaDeNome.forEach(function(item){
+        if(String(item).toUpperCase() == String(nome).toUpperCase())
+            cont++
+    })
+
+    return cont
+}
+
+//JSON
+const criandoDadosJSON = function(){
+    let aluno = {"nome": "José", 
+                "ra": 123456, 
+                "telefone": "40028922", 
+                "email": "jose@gmail.com"
+                }      //Recomendasse que os atributos do JSON seja escrito em minúsculo e de preferencia entre aspas duplas
+
+    //Exibindo o objeto completo do JSON
+    console.log(aluno)
+    console.table(aluno)
+
+    //Exibindo apenas um atributo do JSON
+    console.log(aluno.nome)
+    console.log(aluno.email)
+
+    //Adiciona um novo atrinuto no JSON
+    aluno.sexo = 'Masculino'
+    console.log(aluno)
+
+    //Remove um atributo no JSON
+    delete aluno.telefone
+    console.log(aluno)
+}
+
+const cadastroDeProdutos = function(){
+   let cores = [
+        {"id": 1, "cor": "Branco"}, //Indice 0
+        {"id": 2, "cor": "Preto"},  //Indice 1
+        {"id": 3, "cor": "Azul"},   //Indice 2
+        {"id": 4, "cor": "Rosa"},   //Indice 3
+        {"id": 5, "cor": "Cinza"}   //Indice 4
+   ]
+
+   let marcas = [
+        {"id": 1, "marca": "LG",            "telefone": "123456789", "email": "lg@lg.com..br"},
+        {"id": 2, "marca": "Dell",          "telefone": "123445648", "email": "dell@gmail.com.com..br"},
+        {"id": 3, "marca": "Lenovo",        "telefone": "123446348", "email": "lenovo@gmail.com.com..br"},
+        {"id": 4, "marca": "Apple",         "telefone": "123493648", "email": "apple@gmail.com.com..br"},
+        {"id": 5, "marca": "Rayzer",        "telefone": "109445648", "email": "rayzer@gmail.com.com..br"},
+        {"id": 6, "marca": "Logitech",      "telefone": "123445645", "email": "log@gmail.com.com..br"},
+        {"id": 7, "marca": "Multilaser",    "telefone": "123445609", "email": "mtlaser@gmail.com.com..br"}
+   ]
+
+   let produtos = [
+        {   "id": 1, 
+            "nome": "Monitor", 
+            "descricao": "27 polegadas",
+            "marca": [
+                marcas[1].marca
+            ],
+            "qtde": 20,
+            "cor": [
+                cores[4],
+                cores[1]
+            ],
+            "valor": 800.50
+        },
+
+        {   "id": 2,
+            "nome": "Teclado",   
+            "descricao": "Teclado mecânico RGB",
+            "marca": [
+                marcas[5].marca
+            ],
+            "qtde": 200,
+            "cor": cores,
+            "valor": 150
+        },
+
+        {   "id": 3,
+            "nome": "Mouse",   
+            "descricao": "Mouse sem fio",
+            "marca": [
+                marcas[0].marca,
+                marcas[1].marca,
+                marcas[5].marca
+            ],
+            "qtde": 500,
+            "cor": [
+                cores[0],
+                cores[1],
+                cores[4]
+            ],
+            "valor": 80
+        }
+
+   ]
+
+    //console.log(cores)
+    //console.table(cores)
+
+    //console.log(cores[2].nome)
+
+    // console.log(produtos)
+    // console.log(produtos[0].cor)
+    // console.log(produtos[0].cor[1].cor) //Saida especificando a cor
+
+    // console.table(produtos)
+
+    //Listar as cores
+    // produtos[0].cor.forEach(function(nomeCor){
+    //     console.log('A cor do produto é:' + nomeCor.cor)
+    // })
+
+    produtos[0].nomeforEach(function(nomeProduto, qtde, valor, cores, marca){
+            console.log(`Produto: ${nomeProduto.nome}`)
+            console.log(`qtde: ${qtde}`)
+            console.log(`Valor: ${valor}`)
+            console.log(`Cor: ${cores} `)
+            console.log(`Marca: ${marcas}`)
+        })
+    
+}
+
 //exibirDados()
-manipularDados()
+//manipularDados()
+//console.table(listaDeNome)
+
+// let resposta = removerItem("Maria")
+
+// if(resposta)
+//     console.log('Item removido com sucesso')
+// else
+//     console.log('Item não encontrado')
+
+// console.table(listaDeNome)
+
+//console.log(verificarItem('Maria'))
+
+//console.log(quantidadeDeItens('Ana da Silva'))
+
+//criandoDadosJSON()
+
+cadastroDeProdutos()
