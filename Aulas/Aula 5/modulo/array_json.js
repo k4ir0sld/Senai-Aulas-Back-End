@@ -269,6 +269,66 @@ const cadastroDeProdutos = function(){
 
    ]
 
+      // Exibe o array de produtos formatado como tabela no console
+    // Facilita a visualização de todos os campos e valores
+    //console.table(produtos)
+
+    // Percorre o array de cores do primeiro produto (índice 0)
+    // Para cada cor, exibe uma mensagem com o nome da cor no console
+
+    //repetição dentro da outra
+
+    //Percorre o objeto de produto, qtde e valor para trazer dados de cada array
+    /*produtos.forEach(function(itemProduto){
+    console.log(`Produto: ${itemProduto.nome}`)
+    console.log(`Quantidade: ${itemProduto.qtde}`)
+    console.log(`Valor: ${itemProduto.valor}`)
+
+        //Percorre o objeto de marca dentro de cada produto para trazer as marcas
+        itemProduto.marca.forEach(function(marca){
+        console.log( Marca: ${marca}`)
+        })
+
+        //Percorre o objeto de cor dentro de cada produto, para trazer as cores
+        itemProduto.cor.forEach(function(cor){
+        console.log(`Cor: ${cor.nomecor}`)
+
+        })
+    })*/
+
+
+    //Pesquisando um produto pelo NOME
+    /*console.log("Pesuisando produtos pelo Nome.....")
+    let nome = "mouse"
+
+    produtos.forEach(function(itemProduto){
+    if(String(itemProduto.nome).toUpperCase() == String(nome).toUpperCase())
+        console.log(itemProduto)
+    })*/
+
+    //Pesquisanod plea cor
+    console.log("Pesquisando produto pela cor.......")
+
+    let corBusca = "Cinza"
+    let status = false
+    
+    produtos.forEach(function(produto){
+        produto.cor.forEach(function(itemCor){
+            if (itemCor.cor.toUpperCase() === corBusca.toUpperCase()) {
+                console.log(produto)
+                status = true
+            }
+        })
+    })
+    
+    if(!status)
+        console.log('Item pesquisado não foi encontrado.......')
+
+}
+cadastroDeProdutos()
+
+//criandodadosJSON()
+
     //console.log(cores)
     //console.table(cores)
 
@@ -285,15 +345,7 @@ const cadastroDeProdutos = function(){
     //     console.log('A cor do produto é:' + nomeCor.cor)
     // })
 
-    produtos[0].nomeforEach(function(nomeProduto, qtde, valor, cores, marca){
-            console.log(`Produto: ${nomeProduto.nome}`)
-            console.log(`qtde: ${qtde}`)
-            console.log(`Valor: ${valor}`)
-            console.log(`Cor: ${cores} `)
-            console.log(`Marca: ${marcas}`)
-        })
-    
-}
+
 
 //exibirDados()
 //manipularDados()
@@ -314,4 +366,3 @@ const cadastroDeProdutos = function(){
 
 //criandoDadosJSON()
 
-cadastroDeProdutos()
