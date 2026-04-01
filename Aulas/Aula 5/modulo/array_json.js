@@ -265,6 +265,7 @@ const cadastroDeProdutos = function(){
                 cores[4]
             ],
             "valor": 80
+        
         }
 
    ]
