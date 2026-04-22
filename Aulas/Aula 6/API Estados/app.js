@@ -52,10 +52,27 @@ const { estados } = require('./modulo/array_json.js')
 
 //Criando EndPoints para a API
 
-//Retorna dados dos estados filtrando pelo uf 
-app.get('/v1/senai/dados/estado/:uf', function(request, response){
+//Retorna dados dos estados filtrando pelo uf Params (Recebe a variavel UF através da URL separada pela /)
+/* app.get('/v1/senai/dados/estado/:uf', function(request, response){
     
     let sigla = request.params.uf
+    let dadosEstado = estadosCidades.getDadosEstado(sigla)
+    
+    if(!dadosEstado){
+        response.status(404) //O response de status deve vir sempre primeiro!!!
+        response.json({"message": "O estado informado não foi encontrado!" });
+    }else{
+        response.status(200)
+        response.json(dadosEstado)
+    }
+    
+}) */
+
+//Retorna dados dos estados filtrando pelo uf Usando QUERY (Recebe vari UF via Query Params, que são variaveis encaminhadas apos o a ?)
+app.get('/v1/senai/dados/estado/', function(request, response){ //url = /v1/senai/dados/estados/?uf=sp
+    
+    //let sigla = request.params.uf - Linha mudada
+    let sigla = request.query.uf
     let dadosEstado = estadosCidades.getDadosEstado(sigla)
     
     if(!dadosEstado){
@@ -175,6 +192,8 @@ app.get('/v1/senai/help', function(request, response){
     response.status(200)
     response.json(docAPI)
 })
+
+
 
 //Serve para inicializar a API para receber requisições
 app.listen(8080, function(){

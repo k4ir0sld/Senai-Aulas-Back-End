@@ -17,33 +17,40 @@ const knexConex = knex(knexConfig.development)
 
 //Função para inserir dados na tabela de filme
 const  insertFilme = async function(filme){
-    //O mesmo nome que você colocou no banco devem ser o nome dos atributos no arquivo
-    let sql = `insert into tbl_filme(
-						nome, 
-                        data_lancamento, 
-                        duracao, 
-                        sinopse, 
-                        avaliacao, 
-                        valor, 
-                        capa
-                        )
-				values(
-						'${filme.nome}', 
-                        '${filme.data_lancamento}', 
-                        '${filme.duracao}',
-                        '${filme.sinopse}',
-                        '${filme.avaliacao}',
-                        '${filme.valor}',
-                        '${filme.capa}'
-                        );`
 
-    //Executar o ScriptSQL no banco de dados
-    let result = await knexConex.raw(sql)
+    try {
+        //O mesmo nome que você colocou no banco devem ser o nome dos atributos no arquivo
+        let sql = `insert into tbl_filme(
+            nome, 
+            data_lancamento, 
+            duracao, 
+            sinopse, 
+            avaliacao, 
+            valor, 
+            capa
+            )
+            values(
+                '${filme.nome}', 
+                '${filme.data_lancamento}', 
+                '${filme.duracao}',
+                '${filme.sinopse}',
+                if('${filme.avaliacao}' = '', null, '${filme.avaliacao}'),
+                '${filme.valor}',
+                '${filme.capa}'
+                );`
+                
+                //Executar o ScriptSQL no banco de dados
+                let result = await knexConex.raw(sql)
+                
+                if(result)
+                    return true
+                else
+                    return false
 
-    if(result)
-        return true
-    else
-        return false
+            } catch (error) {
+                //console.log(error)
+                return false
+            }
 }
 
 //Função para atualizar um filme existente na tabela

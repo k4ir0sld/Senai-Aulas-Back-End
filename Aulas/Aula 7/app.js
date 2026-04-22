@@ -24,10 +24,14 @@ app.use(cors(corsOptions))
 
 //ENDPOINTS
 app.post('/v1/senai/locadora/filme', bodyParserJSON, async function(request, response){
+
     //Recebe o conteúdo dentro do body da requisição
     let dados = request.body
 
-    let result = await controllerFilme.inserirNovoFilme(dados)
+    //Recebe o content type da requisição, para validar se é um JSON
+    let contentType = request.headers['content-type']
+
+    let result = await controllerFilme.inserirNovoFilme(dados, contentType)
 
     response.status(result.status_code)
     response.json(result)

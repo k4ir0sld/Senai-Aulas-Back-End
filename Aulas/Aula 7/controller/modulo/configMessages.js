@@ -22,14 +22,37 @@ const ERROR_BAD_REQUEST = {
     status_code: 400,
     message: 'Os dados enviados na requisição não estão corretos.'
 }
+
+const ERROR_INTERNAL_SERVER_MODEL = {
+    status: false,
+    status_code: 500,
+    message: 'Não foi possível processar a requisição por conta de erro na API [ERRO NA MODELAGEM DE DADOS].'
+}
+
+const ERROR_INTERNAL_SERVER_CONTROLLER = {
+    status: false,
+    status_code: 500,
+    message: 'Não foi possível processar a requisição por conta de erro na API [ERRO NA CONTROLLER].'
+}
+
+const ERROR_CONTENT_TYPE = {
+    status: false,
+    status_code: 415,
+    message: 'Não foi possível processar a requisição, pois o formato de dados aceito pela API é somente JSON.'
+}
+
 //Mensages de sucesso da API
 const SUCCESS_CREATED_ITEM = {
     status: true,
     status_code: 201,
     message: 'Registro inserido com sucesso!'
 }
+
 module.exports = {
     DEFAULT_MESSAGE,
     ERROR_BAD_REQUEST,
-    SUCCESS_CREATED_ITEM
+    SUCCESS_CREATED_ITEM,
+    ERROR_INTERNAL_SERVER_MODEL,
+    ERROR_CONTENT_TYPE,
+    ERROR_INTERNAL_SERVER_CONTROLLER
 }
