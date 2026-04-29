@@ -35,9 +35,12 @@ const inserirNovoFilme = async function(filme, contentType){
                 let result = await filmeDAO.insertFilme(filme)
                 
                 if(result){//201
+                    filme.id = result[0].insertId
+                
                     message.DEFAULT_MESSAGE.status      = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message     = message.SUCCESS_CREATED_ITEM.message
+                    message.DEFAULT_MESSAGE.response = filme
                 }else{//500
                     return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
                 }
@@ -55,8 +58,56 @@ const inserirNovoFilme = async function(filme, contentType){
 }
 
 //Função para atualizar um filme
-const atualizarFilme = async function(){
+const atualizarFilme = async function(filme, id, contentType){
+    let message = JSON.parse(JSON.stringify(config_message))
 
+    try {
+        //Validação do Contenty type para receber apenas JSON
+        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+            //Validação para o ID incorreto
+            let resultBuscarID = await buscarFilme(id) //Realizando a validação chamando a outra 
+                                                        //função que já está configurada para isso
+
+            //Se a função buscar encontrar o filme o atributo status do JSON sera verdadeiro
+            //Isso significa que o filme existe na base, caso não retorne true, então
+            //o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
+            if(resultBuscarID.status){
+                let validar = await validarDados(filme)
+
+                //Validação de campos obrigatórios para a atualização (Body)
+                if(!validar){
+                    //Adiciono o atributo ID do filme no JSON para ser enviado ao DAO1
+                    filme.id = id
+
+                    //Chama a função do DAO para atualizar o Filme (dados e o ID)
+                    let result = await filmeDAO.updateFilme(filme)
+                    let historico = await filmeDAO.selectByIdFilme(id)
+
+                    if(result){
+                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATED_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATED_ITEM.message
+                        message.DEFAULT_MESSAGE.message = historico
+
+                        return message.DEFAULT_MESSAGE //200 (Atualizado)
+
+                    }else{
+                        return message.ERROR_INTERNAL_SERVER_MODEL //500
+                    }
+
+                }else{
+                    return validar //400
+                }
+            }else{
+                return resultBuscarID //400 ou 404 ou 500 - Pq esta função já tem a validação 
+            }                           // e a resposta com as respectivas menssagens
+
+        }else{
+            return message.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500 (Controller)
+    }
 }
 
 //Função para retornar TODOS os filmes
@@ -95,7 +146,7 @@ const buscarFilme = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
-        //Validação para garantir que o ID seja válido
+        //Validação para garantir que o ID seja válido (ID Sempre vem como param pelo app)
         if(id == '' || id == null || id == undefined || isNaN(id)){
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST //400
@@ -123,8 +174,29 @@ const buscarFilme = async function(id){
 }
 
 //Função para excluir um filme
-const excluirFilme = async function(){
+const excluirFilme = async function(id){
+    let message = JSON.parse(JSON.stringify(config_message))
+    try {    
+        let resultBuscarID = await buscarFilme(id)
 
+        if(resultBuscarID.status){
+            let result = await filmeDAO.deleteFilme(id)
+
+            if(result){
+                message.DEFAULT_MESSAGE.status = message.SUCCESS_DELETE_ITEM.status
+                message.DEFAULT_MESSAGE.status_code = message.SUCCESS_DELETE_ITEM.status_code
+                message.DEFAULT_MESSAGE.message = message.SUCCESS_DELETE_ITEM.message
+            
+                return message.DEFAULT_MESSAGE //200
+            }else{
+                return message.ERROR_NOT_FOUND //404
+            }
+        }else{
+            return message.ERROR_INTERNAL_SERVER_MODEL //500 (Model)
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (Controller)
+    }
 }
 
 //Função para validar todos os dados de filme 
@@ -169,5 +241,7 @@ const validarDados = async function(filme){
 module.exports = {
     inserirNovoFilme,
     listarFilme,
-    buscarFilme
+    buscarFilme,
+    atualizarFilme,
+    excluirFilme
 }

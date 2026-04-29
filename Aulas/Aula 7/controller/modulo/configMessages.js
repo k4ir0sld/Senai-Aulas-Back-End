@@ -55,11 +55,24 @@ const SUCCESS_CREATED_ITEM = {
     status_code: 201,
     message: 'Registro inserido com sucesso!'
 }
-
+//Retornos para GET 200
 const SUCCESS_RESPONSE = {
     status: true,
-    status_code: 200,
+    status_code: 200
 }
+//Retornos para PUT 200
+const SUCCESS_UPDATED_ITEM = {
+    status: true,
+    status_code: 200, 
+    message: 'Resgistro atualizado com sucesso'
+}
+//Retornos para DELETE 200
+const SUCCESS_DELETE_ITEM = {
+    status: true,
+    status_code: 200, 
+    message: 'Resgistro apagado com sucesso'
+}
+
 
 module.exports = {
     DEFAULT_MESSAGE,
@@ -69,5 +82,7 @@ module.exports = {
     ERROR_CONTENT_TYPE,
     ERROR_INTERNAL_SERVER_CONTROLLER,
     ERROR_NOT_FOUND, 
-    SUCCESS_RESPONSE
+    SUCCESS_RESPONSE,
+    SUCCESS_UPDATED_ITEM,
+    SUCCESS_DELETE_ITEM
 }
