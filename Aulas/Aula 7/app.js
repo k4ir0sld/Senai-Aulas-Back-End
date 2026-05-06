@@ -24,6 +24,8 @@ app.use(cors(corsOptions))
 
 //ENDPOINTS
 //Os endpoints devem seguir o mesmo nome se diferenciando apenas pelo verbo
+
+//Endpoint para Inserir um novo Filme no BD
 app.post('/v1/senai/locadora/filme', bodyParserJSON, async function(request, response){
 
     //Recebe o conteúdo dentro do body da requisição
@@ -38,6 +40,7 @@ app.post('/v1/senai/locadora/filme', bodyParserJSON, async function(request, res
     response.json(result)
 })
 
+//Endpoint para Listar todos os Filmes do BD
 app.get('/v1/senai/locadora/filme', async function(request, response){
     let result = await controllerFilme.listarFilme()
 
@@ -45,6 +48,7 @@ app.get('/v1/senai/locadora/filme', async function(request, response){
     response.json(result)
 } )
 
+//Endpoint para Buscar Filme pelo ID
 app.get('/v1/senai/locadora/filme/:id', async function(request, response){
     //Vamos ultilizar a busca via parametro pois a busca é um identificador unico
     //Só vem via parametro o ID !!!
@@ -57,6 +61,7 @@ app.get('/v1/senai/locadora/filme/:id', async function(request, response){
     response.json(result)
 })
 
+//Endpoint para Atualizar um Filme pelo ID
 app.put('/v1/senai/locadora/filme/:id', bodyParserJSON, async function(request, response){
     //Recebe o content type da requisição
     let contentType = request.headers['content-type']
@@ -74,6 +79,7 @@ app.put('/v1/senai/locadora/filme/:id', bodyParserJSON, async function(request, 
 
 })
 
+//Endpoint pata Deletar um Filme pelo ID
 app.delete('/v1/senai/locadora/filme/:id', async function(request, response){
     let id = request.params.id
 

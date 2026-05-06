@@ -34,13 +34,15 @@ const inserirNovoFilme = async function(filme, contentType){
                 //Encaminha os dados do filme para o DAO
                 let result = await filmeDAO.insertFilme(filme)
                 
-                if(result){//201
+                if(result){//
+                    //Criando o atributo ID no JSON do filme e colocando
+                    //o ID gerado após o insert
                     filme.id = result[0].insertId
                 
                     message.DEFAULT_MESSAGE.status      = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message     = message.SUCCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response = filme
+                    message.DEFAULT_MESSAGE.response    = filme
                 }else{//500
                     return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
                 }
@@ -81,13 +83,12 @@ const atualizarFilme = async function(filme, id, contentType){
 
                     //Chama a função do DAO para atualizar o Filme (dados e o ID)
                     let result = await filmeDAO.updateFilme(filme)
-                    let historico = await filmeDAO.selectByIdFilme(id)
 
                     if(result){
-                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATED_ITEM.status
+                        message.DEFAULT_MESSAGE.status      = message.SUCCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
-                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATED_ITEM.message
-                        message.DEFAULT_MESSAGE.message = historico
+                        message.DEFAULT_MESSAGE.message     = message.SUCCESS_UPDATED_ITEM.message
+                        message.DEFAULT_MESSAGE.message    = filme
 
                         return message.DEFAULT_MESSAGE //200 (Atualizado)
 
@@ -147,7 +148,7 @@ const buscarFilme = async function(id){
 
     try {
         //Validação para garantir que o ID seja válido (ID Sempre vem como param pelo app)
-        if(id == '' || id == null || id == undefined || isNaN(id)){
+        if(id == undefined || id == '' || id == null || isNaN(id)){
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST //400
         }else{
@@ -176,23 +177,27 @@ const buscarFilme = async function(id){
 //Função para excluir um filme
 const excluirFilme = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
-    try {    
+    try {
+        //Validação do erro 400 e 404
         let resultBuscarID = await buscarFilme(id)
 
+        //Validação para verificar se o status é verdadeiro(se existe o filme)
         if(resultBuscarID.status){
             let result = await filmeDAO.deleteFilme(id)
 
             if(result){
-                message.DEFAULT_MESSAGE.status = message.SUCCESS_DELETE_ITEM.status
-                message.DEFAULT_MESSAGE.status_code = message.SUCCESS_DELETE_ITEM.status_code
-                message.DEFAULT_MESSAGE.message = message.SUCCESS_DELETE_ITEM.message
+                message.DEFAULT_MESSAGE.status = message.SUCCESS_DELETED_ITEM.status
+                message.DEFAULT_MESSAGE.status_code = message.SUCCESS_DELETED_ITEM.status_code
+                message.DEFAULT_MESSAGE.message = message.SUCCESS_DELETED_ITEM.message
+
+                //return message.SUCCESS_DELETED_ITEM //200 (Registro apagado com sucesso)
             
                 return message.DEFAULT_MESSAGE //200
             }else{
-                return message.ERROR_NOT_FOUND //404
+                return message.ERROR_INTERNAL_SERVER_MODEL //500 (Model)
             }
         }else{
-            return message.ERROR_INTERNAL_SERVER_MODEL //500 (Model)
+            return resultBuscarID //400 ou 404
         }
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (Controller)
@@ -206,19 +211,19 @@ const validarDados = async function(filme){
     let message = JSON.parse(JSON.stringify(config_message))
 
      //Validação de dados para os atrinutos do FIlme (Status 400)
-     if(filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length > 80){
+     if(filme.nome == undefined || filme.nome == '' || filme.nome == null || filme.nome.length > 80){
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
 
-    }else if(filme.data_lancamento == '' || filme.data_lancamento == null || filme.data_lancamento == undefined || filme.data_lancamento.length != 10){
+    }else if(filme.data_lancamento == undefined || filme.data_lancamento == '' || filme.data_lancamento == null || filme.data_lancamento.length != 10){
         message.ERROR_BAD_REQUEST.field = '[DATA_LANCAMENTO] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
         
-    }else if(filme.duracao == '' || filme.duracao == null || filme.duracao == undefined || filme.duracao.length < 5){
+    }else if(filme.duracao == undefined || filme.duracao == '' || filme.duracao == null ||  filme.duracao.length < 5){
         message.ERROR_BAD_REQUEST.field = '[DURACAO] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(filme.sinopse == '' || filme.sinopse == null || filme.sinopse == undefined){
+    }else if(filme.sinopse == undefined || filme.sinopse == '' || filme.sinopse == null){
         message.ERROR_BAD_REQUEST.field = '[SINOPSE] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
@@ -226,7 +231,7 @@ const validarDados = async function(filme){
         message.ERROR_BAD_REQUEST.field = '[AVALIACAO] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(filme.valor == '' || filme.valor == null || filme.valor == undefined || filme.valor.split('.')[0].length > 3 || isNaN(filme.valor)){
+    }else if(filme.valor == undefined || filme.valor == '' || filme.valor == null || filme.valor.split('.')[0].length > 3 || isNaN(filme.valor)){
         message.ERROR_BAD_REQUEST.field = '[VALOR] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 

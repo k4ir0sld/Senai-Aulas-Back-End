@@ -48,7 +48,6 @@ const ERROR_NOT_FOUND = {
 }
 
 
-
 //Mensages de sucesso da API
 const SUCCESS_CREATED_ITEM = {
     status: true,
@@ -66,8 +65,8 @@ const SUCCESS_UPDATED_ITEM = {
     status_code: 200, 
     message: 'Resgistro atualizado com sucesso'
 }
-//Retornos para DELETE 200
-const SUCCESS_DELETE_ITEM = {
+//Retornos para DELETE (200 ou 204)
+const SUCCESS_DELETED_ITEM = {
     status: true,
     status_code: 200, 
     message: 'Resgistro apagado com sucesso'
@@ -84,5 +83,5 @@ module.exports = {
     ERROR_NOT_FOUND, 
     SUCCESS_RESPONSE,
     SUCCESS_UPDATED_ITEM,
-    SUCCESS_DELETE_ITEM
+    SUCCESS_DELETED_ITEM
 }
