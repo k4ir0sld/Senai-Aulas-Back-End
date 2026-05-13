@@ -17,3 +17,18 @@ create table tbl_filme (
 );
 
 show tables;
+
+create table tbl_personagem (
+	id 				int not null primary key auto_increment,
+    nome 			varchar(80) not null
+);
+   
+select * from tbl_personagem;
+
+desc tbl_personagem;
+
+#Nacionalidade
+create table tbl_nacionalidade (
+	id 				int not null primary key auto_increment,
+    nome 			varchar(80) not null
+);
