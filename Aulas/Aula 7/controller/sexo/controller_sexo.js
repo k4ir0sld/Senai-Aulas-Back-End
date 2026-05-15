@@ -1,6 +1,6 @@
 /***********************************************************************
  * Objetivo: Arquivo responsável pela validação, tratamento e
- *          manipulação de dados para o CRUD de nacionalidade
+ *          manipulação de dados para o CRUD de sexo
  * Data:13/05/2026
  * Autor: Lucas Duarte
  * Versão: 1.0
@@ -10,10 +10,10 @@
 const config_message = require('../modulo/configMessages.js')
 
 //Import do arquivo DAO para fazer o CRUD do sexo no banco de dados
-const nacionalidadeDAO = require('../../model/DAO/nacionalidade/nacionalidade.js')
+const sexoDAO = require('../../model/DAO/sexo/sexo.js')
 
-//Função para inserir um novo nacionalidade
-const inserirNovaNacionalidade = async function (nacionalidade, contentType) {
+//Função para inserir um novo Sexo
+const inserirNovoSexo = async function (sexo, contentType) {
 
     let message = JSON.parse(JSON.stringify(config_message))
 
@@ -21,21 +21,21 @@ const inserirNovaNacionalidade = async function (nacionalidade, contentType) {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let validar = await validarDadosNacionalidade(nacionalidade)
+            let validar = await validarDadosSexo(sexo)
 
             if (validar) {
                 return validar //400
 
             }else{
-                let result = await nacionalidadeDAO.insertNacionalidade(nacionalidade)
+                let result = await sexoDAO.insertSexo(sexo)
 
                 if (result) {
-                    nacionalidade.id = result[0].insertId
+                    sexo.id = result[0].insertId
 
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response = nacionalidade
+                    message.DEFAULT_MESSAGE.response = sexo
                 }else{
                     return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
                 }
@@ -50,27 +50,27 @@ const inserirNovaNacionalidade = async function (nacionalidade, contentType) {
     }
 }
 
-//Função para atualizar um nacionalidade
-const atualizarNacionalidade = async function(nacionalidade, id, contentType) {
+//Função para atualizar um sexo
+const atualizarSexo = async function(sexo, id, contentType) {
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let resultBuscarID = await buscarNacionalidade(id)
+            let resultBuscarID = await buscarSexo(id)
             if(resultBuscarID.status){
-                let validar = await validarDadosNacionalidade(nacionalidade)
+                let validar = await validarDadosSexo(sexo)
             
                 if(!validar){
-                    nacionalidade.id = id
+                    sexo.id = id
 
-                    let result = await nacionalidadeDAO.updateNacionalidade(nacionalidade)
+                    let result = await sexoDAO.updateSexo(sexo)
                     
                     if(result){
                         message.DEFAULT_MESSAGE.status      = message.SUCCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCCESS_UPDATED_ITEM.message
-                        message.DEFAULT_MESSAGE.message     = nacionalidade
+                        message.DEFAULT_MESSAGE.message     = sexo
 
                         return message.DEFAULT_MESSAGE //200 (Atualizado)
 
@@ -92,12 +92,12 @@ const atualizarNacionalidade = async function(nacionalidade, id, contentType) {
     }
 }
 
-//Função para retornar TODOS os personagens
-const listarNacionalidade = async function(){
+//Função para retornar TODOS os sexos
+const listarSexo = async function(){
     let message = JSON.parse(JSON.stringify(config_message))
     
         try {
-            let result = await nacionalidadeDAO.selectAllNacionalidade()    
+            let result = await sexoDAO.selectAllSexo()    
     
             //Valida se o DAO conseguiu processar os dados
             if(result){
@@ -106,7 +106,7 @@ const listarNacionalidade = async function(){
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                     message.DEFAULT_MESSAGE.response.count = result.length
-                    message.DEFAULT_MESSAGE.response.nacionalidade = result
+                    message.DEFAULT_MESSAGE.response.personagem = result
     
                     return message.DEFAULT_MESSAGE //200 (Dados do Filme)
                 }else{
@@ -121,8 +121,8 @@ const listarNacionalidade = async function(){
         }
 }
 
-//Função para buscar um nacionalidade pelo ID
-const buscarNacionalidade = async function(id){
+//Função para buscar um sexo pelo ID
+const buscarSexo = async function(id){
 let message = JSON.parse(JSON.stringify(config_message))
 
     try {
@@ -130,13 +130,13 @@ let message = JSON.parse(JSON.stringify(config_message))
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST //400
         }else{
-            let result = await nacionalidadeDAO.selectByIdNacionalidade(id)
+            let result = await sexoDAO.selectByIdSexo(id)
 
             if(result){
                 if(result.length > 0){
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.nacionalidade = result
+                    message.DEFAULT_MESSAGE.response.sexo = result
 
                     return message.DEFAULT_MESSAGE //200
                 }else{
@@ -151,15 +151,15 @@ let message = JSON.parse(JSON.stringify(config_message))
     }
 }
 
-//Função para excluir um nacionalidade pelo ID
-const excluirNacionalidade = async function(id){
+//Função para excluir um sexo pelo ID
+const excluirSexo = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
     try {
 
-        let resultBuscarID = await buscarNacionalidade(id)
+        let resultBuscarID = await buscarSexo(id)
 
         if(resultBuscarID.status){
-            let result = await nacionalidadeDAO.deleteNacionalidade(id)
+            let result = await sexoDAO.deleteSexo(id)
 
             if(result){
                 message.DEFAULT_MESSAGE.status = message.SUCCESS_DELETED_ITEM.status
@@ -178,24 +178,28 @@ const excluirNacionalidade = async function(id){
     }
 }
 
-//Função para validar todos os dados do nacionalidade
+//Função para validar todos os dados de sexo
 // (Obrigatórios, qtde de caracteres, etc)
-const validarDadosNacionalidade = async function(nacionalidade){
+const validarDadosSexo = async function(sexo){
     let message = JSON.parse(JSON.stringify(config_message))
     
-    //Validação de dados para os atrinutos da Nacionalidade (Status 400)
-     if(nacionalidade.nome == undefined || nacionalidade.nome == '' || nacionalidade.nome == null || nacionalidade.nome.length > 80){
-        message.ERROR_BAD_REQUEST.field = '[NOME NACIONALIDADE] INVÁLIDO'
+    //Validação de dados para os atrinutos do sexo (Status 400)
+     if(sexo.sigla == undefined || sexo.sigla == '' || sexo.sigla == null || sexo.sigla.length > 4){
+        message.ERROR_BAD_REQUEST.field = '[SIGLA] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
-    }else{
+    }else if(sexo.descricao == undefined || sexo.descricao == '' || sexo.descricao == null || sexo.descricao.length > 40){
+        message.ERROR_BAD_REQUEST.field = '[DESCRIÇÃO] INVÁLIDA'
+        return message.ERROR_BAD_REQUEST //400
+    }
+    else{
         return false
     }
 }
 
 module.exports = {
-    inserirNovaNacionalidade,
-    atualizarNacionalidade,
-    listarNacionalidade,
-    buscarNacionalidade,
-    excluirNacionalidade
+    inserirNovoSexo,
+    atualizarSexo,
+    listarSexo,
+    buscarSexo,
+    excluirSexo
 }

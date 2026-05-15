@@ -9,7 +9,7 @@
 //IMport do arquivo de padronização de mensagens
 const config_message = require('../modulo/configMessages.js')
 
-//Import do arquivo DAO para fazer o CRUD do filme no banco de dados
+//Import do arquivo DAO para fazer o CRUD do sexo no banco de dados
 const personagemDAO = require('../../model/DAO/personagem/personagem.js')
 
 //Função para inserir um novo Personagem
@@ -183,7 +183,7 @@ const excluirPersonagem = async function(id){
 const validarDadosPersonagem = async function(personagem){
     let message = JSON.parse(JSON.stringify(config_message))
     
-    //Validação de dados para os atrinutos do FIlme (Status 400)
+    //Validação de dados para os atrinutos do Personagem (Status 400)
      if(personagem.nome == undefined || personagem.nome == '' || personagem.nome == null || personagem.nome.length > 80){
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400

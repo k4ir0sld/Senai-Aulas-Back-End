@@ -7,6 +7,7 @@ const bodyParser    = require('body-parser')
 const controllerFilme = require('./controller/filme/controller_filme.js')
 const controllerPersonagem = require('./controller/personagem/controller_personagem.js')
 const controllerNacionalidade = require('./controller/nacionalidade/controller_nacionalidade.js')
+const controllerSexo = require('./controller/sexo/controller_sexo.js')
 
 //Criando um objeto para manipular dados do body da API em formato JSON
 const bodyParserJSON = bodyParser.json()
@@ -48,7 +49,7 @@ app.get('/v1/senai/locadora/filme', async function(request, response){
 
     response.status(result.status_code)
     response.json(result)
-} )
+})
 
 //Endpoint para Buscar Filme pelo ID
 app.get('/v1/senai/locadora/filme/:id', async function(request, response){
@@ -113,7 +114,7 @@ app.get('/v1/senai/locadora/personagem', async function(request, response){
 
     response.status(result.status_code)
     response.json(result)
-} )
+})
 
 //Endpoint para Buscar Personagem pelo ID
 app.get('/v1/senai/locadora/personagem/:id', async function(request, response){
@@ -152,7 +153,7 @@ app.delete('/v1/senai/locadora/personagem/:id', async function(request, response
 //ENDPOINTS - tbl_nacionalidade
 //Os endpoints devem seguir o mesmo nome se diferenciando apenas pelo verbo
 
-//Endpoint para Inserir um novo Nacionalidade no BD
+//Endpoint para Inserir uma nova Nacionalidade no BD
 app.post('/v1/senai/locadora/nacionalidade', bodyParserJSON, async function(request, response){
     let dados = request.body
 
@@ -164,15 +165,15 @@ app.post('/v1/senai/locadora/nacionalidade', bodyParserJSON, async function(requ
     response.json(result)
 })
 
-//Endpoint para Listar todos os  do BD
+//Endpoint para Listar todas as Nacionalidades do BD
 app.get('/v1/senai/locadora/nacionalidade', async function(request, response){
     let result = await controllerNacionalidade.listarNacionalidade()
 
     response.status(result.status_code)
     response.json(result)
-} )
+})
 
-//Endpoint para Buscar Personagem pelo ID
+//Endpoint para Buscar Nacionalidade pelo ID
 app.get('/v1/senai/locadora/nacionalidade/:id', async function(request, response){
     let id = request.params.id
 
@@ -182,7 +183,7 @@ app.get('/v1/senai/locadora/nacionalidade/:id', async function(request, response
     response.json(result)
 })
 
-//Endpoint para Atualizar um Personagem pelo ID
+//Endpoint para Atualizar uma Nacionalidade pelo ID
 app.put('/v1/senai/locadora/nacionalidade/:id', bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let id = request.params.id
@@ -195,7 +196,7 @@ app.put('/v1/senai/locadora/nacionalidade/:id', bodyParserJSON, async function(r
 
 })
 
-//Endpoint pata Deletar um Personagem pelo ID
+//Endpoint pata Deletar uma Nacionalidade pelo ID
 app.delete('/v1/senai/locadora/nacionalidade/:id', async function(request, response){
     let id = request.params.id
 
@@ -204,6 +205,64 @@ app.delete('/v1/senai/locadora/nacionalidade/:id', async function(request, respo
     response.status(result.status_code)
     response.json(result)
 })
+
+
+//ENDPOINTS - tbl_sexo
+//Os endpoints devem seguir o mesmo nome se diferenciando apenas pelo verbo
+
+//Endpoint para Inserir um novo Sexo no BD
+app.post('/v1/senai/locadora/sexo', bodyParserJSON, async function(request, response){
+    let dados = request.body
+
+    let contentType = request.headers['content-type']
+
+    let result = await controllerSexo.inserirNovoSexo(dados, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Listar todos os Sexos do BD
+app.get('/v1/senai/locadora/sexo', async function(request, response){
+    let result = await controllerSexo.listarSexo()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Buscar Sexo pelo ID
+app.get('/v1/senai/locadora/sexo/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerSexo.buscarSexo(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Atualizar um Sexo pelo ID
+app.put('/v1/senai/locadora/sexo/:id', bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dados = request.body
+
+    let result = await controllerSexo.atualizarSexo(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+//Endpoint pata Deletar um Sexo pelo ID
+app.delete('/v1/senai/locadora/sexo/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerSexo.excluirSexo(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 
 app.listen(3000, function(){
     console.log('API funcionando e aguardando novas requsições ...')
