@@ -31,7 +31,7 @@ create table tbl_personagem (
     nome 			varchar(80) not null
 );
                             
-select * from tbl_personagem;
+select * from tbl_sexo;
 
 select * from tbl_personagem order by id desc;
 
@@ -46,12 +46,6 @@ desc tbl_personagem;
 create table tbl_nacionalidade (
 	id 				int not null primary key auto_increment,
     nome 			varchar(80) not null
-);
-
-create table tbl_sexo(
-	id 				int not null primary key auto_increment,
-    sigla			varchar(4) not null,
-    descricao 		varchar(40) not null
 );
 
 insert into tbl_nacionalidade(
@@ -71,4 +65,23 @@ update tbl_nacionalidade set
                         where id            = 1 ;
                             
 desc tbl_nacionalidade;
+
+create table tbl_sexo(
+	id 				int not null primary key auto_increment,
+    sigla			varchar(4) not null,
+    descricao 		varchar(40) not null
+);
                             
+insert into tbl_sexo(sigla, descricao)
+	values 	('G', 'Genero');
+            
+update tbl_sexo set
+				sigla = 'g',
+                descricao = 'Assexual'
+                where id = 3;
+
+
+create table tbl_genero(
+	id int not null auto_increment primary key,
+    nome varchar(30) not null
+);

@@ -8,6 +8,8 @@ const controllerFilme = require('./controller/filme/controller_filme.js')
 const controllerPersonagem = require('./controller/personagem/controller_personagem.js')
 const controllerNacionalidade = require('./controller/nacionalidade/controller_nacionalidade.js')
 const controllerSexo = require('./controller/sexo/controller_sexo.js')
+const controllerClassificacao = require('./controller/classificacao/controller_classificacao.js')
+const controllerGenero = require('./controller/genero/controller_genero.js')
 
 //Criando um objeto para manipular dados do body da API em formato JSON
 const bodyParserJSON = bodyParser.json()
@@ -93,7 +95,7 @@ app.delete('/v1/senai/locadora/filme/:id', async function(request, response){
 })
 
 
-//ENDPOINTS - tbl_personagem
+//ENDPOINTS - tbl_genero
 //Os endpoints devem seguir o mesmo nome se diferenciando apenas pelo verbo
 
 //Endpoint para Inserir um novo Personagem no BD
@@ -108,7 +110,7 @@ app.post('/v1/senai/locadora/personagem', bodyParserJSON, async function(request
     response.json(result)
 })
 
-//Endpoint para Listar todos os  do BD
+//Endpoint para Listar todos os Personagens do BD
 app.get('/v1/senai/locadora/personagem', async function(request, response){
     let result = await controllerPersonagem.listarPersonagem()
 
@@ -120,7 +122,7 @@ app.get('/v1/senai/locadora/personagem', async function(request, response){
 app.get('/v1/senai/locadora/personagem/:id', async function(request, response){
     let id = request.params.id
 
-    let result = await controllerPersonagem.buscarPersonagem(id)
+    let result = await controllergenero.buscargenero(id)
 
     response.status(result.status_code)
     response.json(result)
@@ -258,6 +260,125 @@ app.delete('/v1/senai/locadora/sexo/:id', async function(request, response){
     let id = request.params.id
 
     let result = await controllerSexo.excluirSexo(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//ENDPOINTS - tbl_classificacao
+//Os endpoints devem seguir o mesmo nome se diferenciando apenas pelo verbo
+
+//Endpoint para Inserir uma Classificacao
+app.post('/v1/senai/locadora/classificacao', bodyParserJSON, async function(request, response){
+    //Recebe o conteúdo dentro do body da requisição
+    let dados = request.body
+    
+    //Recebe o content type da requisição, para validar se é um JSON
+    let contentType = request.headers['content-type']
+
+    let result = await controllerClassificacao.inserirNovoClassificacao(dados, contentType)
+   
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Listar todas as Classificações
+app.get('/v1/senai/locadora/classificacao', async function(request, response){
+    let result = await controllerClassificacao.listarClassificacao()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Buscar uma Classificação pelo ID
+app.get('/v1/senai/locadora/classificacao/:id', async function(request, response){
+    //Recebe o ID via parametro
+    let id = request.params.id
+
+    let result = await controllerClassificacao.buscarClassificacao(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Atualiar uma Classificação pelo ID
+app.put('/v1/senai/locadora/classificacao/:id', bodyParserJSON, async function(request, response){
+    //Recebe o contenty type da requisição
+    let contentType = request.headers['content-type']
+    //Recebe o ID do registro a ser atualizado
+    let id = request.params.id
+    //Recebe os dados enviados no corpo da requisição
+    let dados = request.body
+
+    //Chama a função de atualizar na controller e encaminha os dados, id e content-type
+    //obedecendo a ordem de criação na função da controller
+    let result = await controllerClassificacao.atualizarClassificacao(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Deletar uma Classificação pelo ID
+app.delete('/v1/senai/locadora/classificacao/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerClassificacao.excluirClassificacao(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//ENDPOINTS - tbl_genero
+//Os endpoints devem seguir o mesmo nome se diferenciando apenas pelo verbo
+
+//Endpoint para Inserir um novo genero no BD
+app.post('/v1/senai/locadora/genero', bodyParserJSON, async function(request, response){
+    let dados = request.body
+
+    let contentType = request.headers['content-type']
+
+    let result = await controllerGenero.inserirNovoGenero(dados, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Listar todos os generos do BD
+app.get('/v1/senai/locadora/genero', async function(request, response){
+    let result = await controllerGenero.listarGenero()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Buscar genero pelo ID
+app.get('/v1/senai/locadora/genero/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerGenero.buscarGenero(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Atualizar um genero pelo ID
+app.put('/v1/senai/locadora/genero/:id', bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dados = request.body
+
+    let result = await controllerGenero.atualizarGenero(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+//Endpoint pata Deletar um genero pelo ID
+app.delete('/v1/senai/locadora/genero/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerGenero.excluirGenero(id)
 
     response.status(result.status_code)
     response.json(result)
