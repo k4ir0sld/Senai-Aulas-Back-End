@@ -226,6 +226,29 @@ const excluirGeneroFilme = async function(id){
     }
 }
 
+//Função para excluir os generos relacionados com o filme
+const excluirGenerosIdFilme = async function(idFilme){
+    let message = JSON.parse(JSON.stringify(config_message))
+    try{
+        //Chamar a função do DAO para excluir o genero
+        let result = await generoFilmeDAO.deleteGenerosByIdFIlme(idFilme)
+
+        if(result){
+            message.DEFAULT_MESSAGE.status = message.SUCCESS_DELETED_ITEM.status
+            message.DEFAULT_MESSAGE.status_code = message.SUCCESS_DELETED_ITEM.status_code
+            message.DEFAULT_MESSAGE.message = message.SUCCESS_DELETED_ITEM.message
+            
+            return message.DEFAULT_MESSAGE //200
+        }else{
+            return message.ERROR_INTERNAL_SERVER_MODEL //500 (Model)
+        }
+
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (Controller)
+    }
+}
+
+
 //Função para validar todos os dados do genero
 // (Obrigatórios, qtde de caracteres, etc)
 const validarDadosGenero = async function(generoFilme){
@@ -250,5 +273,6 @@ module.exports = {
     buscarGeneroFilme,
     buscarFilmeIdGenero,
     buscarGeneroIdFilme,
-    excluirGeneroFilme
+    excluirGeneroFilme,
+    excluirGenerosIdFilme
 }

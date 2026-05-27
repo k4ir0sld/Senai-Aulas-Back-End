@@ -96,13 +96,34 @@ const atualizarFilme = async function(filme, id, contentType){
 
                 //Validação de campos obrigatórios para a atualização (Body)
                 if(!validar){
-                    //Adiciono o atributo ID do filme no JSON para ser enviado ao DAO1
+                    //Adiciono o atributo ID do filme no JSON para ser enviado ao DAO!
                     filme.id = id
 
                     //Chama a função do DAO para atualizar o Filme (dados e o ID)
                     let result = await filmeDAO.updateFilme(filme)
 
                     if(result){
+
+                        //Manipulação de dados na tabela de relação entre filme e genero
+                        let resultDeleteGenero = await controller_genero_filme.excluirGenerosIdFilme(filme.id)
+
+                        //Após a exclusão de todos os generos relacionados com o filme
+                        if(resultDeleteGenero.status){
+                            //Manipulação de dados para inserir os Generos do Filme
+                            for(genero of filme.genero){
+                            //Cria o objeto JSON com os IDs do filme e do genero
+                                let filmeGenero = { "id_filme": filme.id, 
+                                                    "id_genero": genero.id
+                                                    }
+                            //Chama a controller do genero filme para inserir os IDs                
+                            let resultInsertGenero = await controller_genero_filme.inserirNovoGeneroFilme(filmeGenero)
+
+                            if(!resultInsertGenero.status){
+                                return message.SUCCESS_CREATED_ITEM_WARNIG //201 com alerta de dados não inseridos 
+                            }
+                            }
+                        }
+                        
                         message.DEFAULT_MESSAGE.status      = message.SUCCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCCESS_UPDATED_ITEM.message

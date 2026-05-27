@@ -85,3 +85,8 @@ create table tbl_genero(
 	id int not null auto_increment primary key,
     nome varchar(30) not null
 );
+
+create table tbl_atividade(
+	id int not null auto_increment primary key,
+    atividade varchar(45) not null
+);

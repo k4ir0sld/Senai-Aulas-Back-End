@@ -168,6 +168,24 @@ const deleteGeneroFilme = async function(id){
     }
 }
 
+//Função para excluir os generos filtrando pelo ID do filme
+//Essa função será utilizada no Update do filme, pois precisa apagar todos os generos
+//relacionados com o filme para inserir as novas relações
+const deleteGenerosByIdFIlme = async function(idFilme) {
+    try {
+        let sql = `delete from tbl_genero_filme where id_filme=${idFilme}`
+
+        let result = await knexConex.raw(sql)
+
+        if(result)
+            return true
+        else
+            return false
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     insertGeneroFilme,
     updateGeneroFilme,
@@ -175,5 +193,6 @@ module.exports = {
     selectByIdGeneroFilme,
     selectFilmesByIdGenero,
     selectGenerosByIdFilmes,
-    deleteGeneroFilme
+    deleteGeneroFilme,
+    deleteGenerosByIdFIlme
 }
