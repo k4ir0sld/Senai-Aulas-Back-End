@@ -10,6 +10,7 @@ const controllerNacionalidade = require('./controller/nacionalidade/controller_n
 const controllerSexo = require('./controller/sexo/controller_sexo.js')
 const controllerClassificacao = require('./controller/classificacao/controller_classificacao.js')
 const controllerGenero = require('./controller/genero/controller_genero.js')
+const controllerAtividade = require('./controller/atividade/atividade_controller.js')
 
 //Criando um objeto para manipular dados do body da API em formato JSON
 const bodyParserJSON = bodyParser.json()
@@ -379,6 +380,62 @@ app.delete('/v1/senai/locadora/genero/:id', async function(request, response){
     let id = request.params.id
 
     let result = await controllerGenero.excluirGenero(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//ENDPOINTS - tbl_atividade
+//Os endpoints devem seguir o mesmo nome se diferenciando apenas pelo verbo
+
+//Endpoint para Inserir uma nova Atividade no BD
+app.post('/v1/senai/locadora/atividade', bodyParserJSON, async function(request, response){
+    let dados = request.body
+
+    let contentType = request.headers['content-type']
+
+    let result = await controllerAtividade.inserirNovaAtividade(dados, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Listar todas as Atividades do BD
+app.get('/v1/senai/locadora/atividade', async function(request, response){
+    let result = await controllerAtividade.listarAtividade()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Buscar Atividade pelo ID
+app.get('/v1/senai/locadora/atividade/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerAtividade.buscarAtividade(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//Endpoint para Atualizar uma Atividade pelo ID
+app.put('/v1/senai/locadora/atividade/:id', bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dados = request.body
+
+    let result = await controllerAtividade.atualizarAtividade(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+//Endpoint pata Deletar uma Atividade pelo ID
+app.delete('/v1/senai/locadora/atividade/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerAtividade.excluirAtividade(id)
 
     response.status(result.status_code)
     response.json(result)

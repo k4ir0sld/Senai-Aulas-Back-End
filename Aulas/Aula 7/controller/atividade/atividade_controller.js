@@ -1,7 +1,7 @@
 /***********************************************************************
  * Objetivo: Arquivo responsável pela validação, tratamento e
- *          manipulação de dados para o CRUD de nacionalidade
- * Data:13/05/2026
+ *          manipulação de dados para o CRUD de atividade
+ * Data:29/05/2026
  * Autor: Lucas Duarte
  * Versão: 1.0
  ***********************************************************************/
@@ -9,11 +9,11 @@
 //IMport do arquivo de padronização de mensagens
 const config_message = require('../modulo/configMessages.js')
 
-//Import do arquivo DAO para fazer o CRUD de nacionalidade no banco de dados
-const nacionalidadeDAO = require('../../model/DAO/nacionalidade/nacionalidade.js')
+//Import do arquivo DAO para fazer o CRUD da atividade no banco de dados
+const atividadeDAO = require('../../model/DAO/atividade/atividade.js')
 
-//Função para inserir um novo nacionalidade
-const inserirNovaNacionalidade = async function (nacionalidade, contentType) {
+//Função para inserir uma nova atividade
+const inserirNovaAtividade = async function (atividade, contentType) {
 
     let message = JSON.parse(JSON.stringify(config_message))
 
@@ -21,21 +21,21 @@ const inserirNovaNacionalidade = async function (nacionalidade, contentType) {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let validar = await validarDadosNacionalidade(nacionalidade)
+            let validar = await validarDadosAtividade(atividade)
 
             if (validar) {
                 return validar //400
 
             }else{
-                let result = await nacionalidadeDAO.insertNacionalidade(nacionalidade)
+                let result = await atividadeDAO.insertAtividade(atividade)
 
                 if (result) {
-                    nacionalidade.id = result[0].insertId
+                    atividade.id = result
 
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response = nacionalidade
+                    message.DEFAULT_MESSAGE.response = atividade
                 }else{
                     return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
                 }
@@ -50,27 +50,27 @@ const inserirNovaNacionalidade = async function (nacionalidade, contentType) {
     }
 }
 
-//Função para atualizar um nacionalidade
-const atualizarNacionalidade = async function(nacionalidade, id, contentType) {
+//Função para atualizar uma atividade
+const atualizarAtividade = async function(atividade, id, contentType) {
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let resultBuscarID = await buscarNacionalidade(id)
+            let resultBuscarID = await buscarAtividade(id)
             if(resultBuscarID.status){
-                let validar = await validarDadosNacionalidade(nacionalidade)
+                let validar = await validarDadosAtividade(atividade)
             
                 if(!validar){
-                    nacionalidade.id = id
+                    atividade.id = id
 
-                    let result = await nacionalidadeDAO.updateNacionalidade(nacionalidade)
+                    let result = await atividadeDAO.updateAtividade(atividade)
                     
                     if(result){
                         message.DEFAULT_MESSAGE.status      = message.SUCCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCCESS_UPDATED_ITEM.message
-                        message.DEFAULT_MESSAGE.message     = nacionalidade
+                        message.DEFAULT_MESSAGE.message     = atividade
 
                         return message.DEFAULT_MESSAGE //200 (Atualizado)
 
@@ -92,12 +92,12 @@ const atualizarNacionalidade = async function(nacionalidade, id, contentType) {
     }
 }
 
-//Função para retornar TODOS os personagens
-const listarNacionalidade = async function(){
+//Função para retornar TODAS as atividades
+const listarAtividade = async function(){
     let message = JSON.parse(JSON.stringify(config_message))
     
         try {
-            let result = await nacionalidadeDAO.selectAllNacionalidade()    
+            let result = await atividadeDAO.selectAllAtividade()    
     
             //Valida se o DAO conseguiu processar os dados
             if(result){
@@ -106,7 +106,7 @@ const listarNacionalidade = async function(){
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                     message.DEFAULT_MESSAGE.response.count = result.length
-                    message.DEFAULT_MESSAGE.response.nacionalidade = result
+                    message.DEFAULT_MESSAGE.response.atividade = result
     
                     return message.DEFAULT_MESSAGE //200 (Dados do Filme)
                 }else{
@@ -121,8 +121,8 @@ const listarNacionalidade = async function(){
         }
 }
 
-//Função para buscar um nacionalidade pelo ID
-const buscarNacionalidade = async function(id){
+//Função para buscar uma atividade pelo ID
+const buscarAtividade = async function(id){
 let message = JSON.parse(JSON.stringify(config_message))
 
     try {
@@ -130,7 +130,7 @@ let message = JSON.parse(JSON.stringify(config_message))
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST //400
         }else{
-            let result = await nacionalidadeDAO.selectByIdNacionalidade(id)
+            let result = await atividadeDAO.selectByIdAtividade(id)
 
             if(result){
                 if(result.length > 0){
@@ -151,15 +151,15 @@ let message = JSON.parse(JSON.stringify(config_message))
     }
 }
 
-//Função para excluir um nacionalidade pelo ID
-const excluirNacionalidade = async function(id){
+//Função para excluir uma atividade pelo ID
+const excluirAtividade = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
     try {
 
-        let resultBuscarID = await buscarNacionalidade(id)
+        let resultBuscarID = await buscarAtividade(id)
 
         if(resultBuscarID.status){
-            let result = await nacionalidadeDAO.deleteNacionalidade(id)
+            let result = await atividadeDAO.deleteAtividade(id)
 
             if(result){
                 message.DEFAULT_MESSAGE.status = message.SUCCESS_DELETED_ITEM.status
@@ -178,14 +178,14 @@ const excluirNacionalidade = async function(id){
     }
 }
 
-//Função para validar todos os dados do nacionalidade
+//Função para validar todos os dados da atividade
 // (Obrigatórios, qtde de caracteres, etc)
-const validarDadosNacionalidade = async function(nacionalidade){
+const validarDadosAtividade = async function(atividade){
     let message = JSON.parse(JSON.stringify(config_message))
     
-    //Validação de dados para os atrinutos da Nacionalidade (Status 400)
-     if(nacionalidade.nome == undefined || nacionalidade.nome == '' || nacionalidade.nome == null || nacionalidade.nome.length > 80){
-        message.ERROR_BAD_REQUEST.field = '[NOME NACIONALIDADE] INVÁLIDO'
+    //Validação de dados para os atrinutos da Atividade (Status 400)
+     if(atividade.atividade == undefined || atividade.atividade == '' || atividade.atividade == null || atividade.atividade.length > 80){
+        message.ERROR_BAD_REQUEST.field = '[ATIVIDADE] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
     }else{
         return false
@@ -193,9 +193,9 @@ const validarDadosNacionalidade = async function(nacionalidade){
 }
 
 module.exports = {
-    inserirNovaNacionalidade,
-    atualizarNacionalidade,
-    listarNacionalidade,
-    buscarNacionalidade,
-    excluirNacionalidade
+    inserirNovaAtividade,
+    atualizarAtividade,
+    listarAtividade,
+    buscarAtividade,
+    excluirAtividade
 }
